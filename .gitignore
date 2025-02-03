@@ -103,7 +103,7 @@ coverage.xml
 # Sphinx documentation
 docs/
 /docs_src/apidocs
-
+/docs_src/notebooks
 
 # PyBuilder
 target/

@@ -1,4 +1,4 @@
-# {{pipeline_specs.pipeline_name}}
+# Blank Project Docs Template
 
 Last updated: {sub-ref}`today` 
 
@@ -13,18 +13,6 @@ notebooks/02_example_with_dependencies.ipynb
 notebooks/03_public_repo_summary_charts.ipynb
 ```
 
-```{toctree}
-:maxdepth: 1
-:caption: Pipeline Charts 📈
-charts.md
-```
-
-```{toctree}
-:maxdepth: 1
-:caption: Pipeline Dataframes 📊
-{{dataframe_file_list | sort | join("\n")}}
-```
-
 
 ```{toctree}
 :maxdepth: 1
@@ -34,11 +22,6 @@ notebooks.md
 apidocs/index
 ```
 
-
-## Pipeline Specs
-{% for pipeline_id, pipeline_specs in specs.items() %}
-  {% include "docs_src/_templates/pipeline_specs.md" with context %}
-{% endfor %}
 
 
 ## Module Documentation
