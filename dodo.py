@@ -222,7 +222,7 @@ def task_run_notebooks():
                 ),
                 copy_file(
                     Path("./src") / f"{notebook_name}.ipynb",
-                    Path("./docs_src/notebooks/") / f"{notebook_name}.ipynb",
+                    Path("./_docs/notebooks/") / f"{notebook_name}.ipynb",
                     mkdir=True,
                 ),
                 jupyter_clear_output(notebook_name),
@@ -249,15 +249,39 @@ def task_run_notebooks():
 # ###############################################################
 
 notebook_sphinx_pages = [
-    "./docs/html/notebooks/" + notebook.split(".")[0] + ".html"
+    "./_docs/_build/html/notebooks/" + notebook.split(".")[0] + ".html"
     for notebook in notebook_tasks.keys()
 ]
 sphinx_targets = [
-    "./docs/html/index.html",
-    "./docs/html/myst_markdown_demos.html",
-    "./docs/html/apidocs/index.html",
+    "./_docs/_build/html/index.html",
+    "./_docs/_build/html/myst_markdown_demos.html",
+    "./_docs/_build/html/apidocs/index.html",
     *notebook_sphinx_pages,
 ]
+
+
+def copy_docs_src_to_docs():
+    """
+    Copy all files and subdirectories from the docs_src directory to the _docs directory.
+    This function first removes the _docs directory if it exists, then copies docs_src entirely.
+    """
+    src = Path("docs_src")
+    dst = Path("_docs")
+    if dst.exists():
+        shutil.rmtree(dst)  # Remove old _docs directory (if any)
+    shutil.copytree(src, dst)
+
+def copy_docs_build_to_docs():
+    """
+    Copy all files and subdirectories from the docs_src directory to the _docs directory.
+    This function first removes the _docs directory if it exists, then copies docs_src entirely.
+    """
+    src = Path("_docs/_build/html")
+    dst = Path("docs")
+    if dst.exists():
+        shutil.rmtree(dst)  # Remove old _docs directory (if any)
+    shutil.copytree(src, dst)
+
 
 
 def task_compile_sphinx_docs():
@@ -276,9 +300,10 @@ def task_compile_sphinx_docs():
 
     return {
         "actions": [
-            "sphinx-build -M html ./docs_src/ ./docs",
-        ],  # Use docs as build destination
-        # "actions": ["sphinx-build -M html ./docs/ ./docs/_build"], # Previous standard organization
+            copy_docs_src_to_docs,
+            "sphinx-build -M html ./_docs/ ./_docs/_build",
+            copy_docs_build_to_docs,
+            ],
         "targets": sphinx_targets,
         "file_dep": file_dep,
         "task_dep": ["run_notebooks"],
